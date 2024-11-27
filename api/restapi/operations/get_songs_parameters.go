@@ -22,9 +22,9 @@ func NewGetSongsParams() GetSongsParams {
 	var (
 		// initialize parameters with default values
 
-		limitDefault = int64(10)
+		limitDefault = int64(0)
 
-		pageDefault = int64(1)
+		pageDefault = int64(0)
 	)
 
 	return GetSongsParams{
@@ -47,9 +47,9 @@ type GetSongsParams struct {
 	  In: query
 	*/
 	Group *string
-	/*limit on pages
+	/*limit of pages
 	  In: query
-	  Default: 10
+	  Default: 0
 	*/
 	Limit *int64
 	/*link
@@ -58,7 +58,7 @@ type GetSongsParams struct {
 	Link *string
 	/*page number
 	  In: query
-	  Default: 1
+	  Default: 0
 	*/
 	Page *int64
 	/*release date

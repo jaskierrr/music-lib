@@ -16,6 +16,7 @@ type service struct {
 
 type Service interface {
 	GetSongs(ctx context.Context, params operations.GetSongsParams) ([]*models.Song, error)
+	GetLyrics(ctx context.Context, params operations.GetSongsLyricsParams) (string, error)
 }
 
 func New(repo repo.Repository, logger *slog.Logger) Service {

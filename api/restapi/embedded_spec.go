@@ -60,15 +60,15 @@ func init() {
           },
           {
             "type": "integer",
-            "default": 1,
+            "default": 0,
             "description": "page number",
             "name": "page",
             "in": "query"
           },
           {
             "type": "integer",
-            "default": 10,
-            "description": "limit on pages",
+            "default": 0,
+            "description": "limit of pages",
             "name": "limit",
             "in": "query"
           }
@@ -81,6 +81,48 @@ func init() {
               "items": {
                 "$ref": "#/definitions/Song"
               }
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/songs/lyrics": {
+      "get": {
+        "description": "Return song lyrics",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "song id",
+            "name": "id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "default": 0,
+            "description": "couplet number",
+            "name": "couplet",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "default": 0,
+            "description": "limit of couplets",
+            "name": "limit",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "song lyrics",
+            "schema": {
+              "type": "string"
             }
           },
           "400": {
@@ -187,15 +229,15 @@ func init() {
           },
           {
             "type": "integer",
-            "default": 1,
+            "default": 0,
             "description": "page number",
             "name": "page",
             "in": "query"
           },
           {
             "type": "integer",
-            "default": 10,
-            "description": "limit on pages",
+            "default": 0,
+            "description": "limit of pages",
             "name": "limit",
             "in": "query"
           }
@@ -208,6 +250,48 @@ func init() {
               "items": {
                 "$ref": "#/definitions/Song"
               }
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/songs/lyrics": {
+      "get": {
+        "description": "Return song lyrics",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "song id",
+            "name": "id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "default": 0,
+            "description": "couplet number",
+            "name": "couplet",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "default": 0,
+            "description": "limit of couplets",
+            "name": "limit",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "song lyrics",
+            "schema": {
+              "type": "string"
             }
           },
           "400": {

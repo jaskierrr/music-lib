@@ -40,7 +40,7 @@ paths:
           default: 0
         - name: limit
           in: query
-          description: limit on pages
+          description: limit of pages
           required: false
           type: integer
           default: 0
@@ -51,6 +51,36 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Song'
+        400:
+          description: bad request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /songs/lyrics:
+    get:
+      description: Return song lyrics
+      parameters:
+        - name: id
+          in: query
+          description: song id
+          required: true
+          type: integer
+        - name: couplet
+          in: query
+          description: couplet number
+          required: false
+          type: integer
+          default: 0
+        - name: limit
+          in: query
+          description: limit of couplets
+          required: false
+          type: integer
+          default: 0
+      responses:
+        200:
+          description: song lyrics
+          schema:
+            type: string
         400:
           description: bad request
           schema:

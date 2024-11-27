@@ -15,6 +15,7 @@ type controller struct {
 
 type Controller interface {
 	GetSongs(ctx context.Context, params operations.GetSongsParams) ([]*models.Song, error)
+	GetLyrics(ctx context.Context, params operations.GetSongsLyricsParams) (string, error)
 }
 
 func New(service service.Service, logger *slog.Logger) Controller {

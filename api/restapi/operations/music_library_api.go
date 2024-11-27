@@ -45,6 +45,9 @@ func NewMusicLibraryAPI(spec *loads.Document) *MusicLibraryAPI {
 		GetSongsHandler: GetSongsHandlerFunc(func(params GetSongsParams) middleware.Responder {
 			return middleware.NotImplemented("operation GetSongs has not yet been implemented")
 		}),
+		GetSongsLyricsHandler: GetSongsLyricsHandlerFunc(func(params GetSongsLyricsParams) middleware.Responder {
+			return middleware.NotImplemented("operation GetSongsLyrics has not yet been implemented")
+		}),
 	}
 }
 
@@ -83,6 +86,8 @@ type MusicLibraryAPI struct {
 
 	// GetSongsHandler sets the operation handler for the get songs operation
 	GetSongsHandler GetSongsHandler
+	// GetSongsLyricsHandler sets the operation handler for the get songs lyrics operation
+	GetSongsLyricsHandler GetSongsLyricsHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -162,6 +167,9 @@ func (o *MusicLibraryAPI) Validate() error {
 
 	if o.GetSongsHandler == nil {
 		unregistered = append(unregistered, "GetSongsHandler")
+	}
+	if o.GetSongsLyricsHandler == nil {
+		unregistered = append(unregistered, "GetSongsLyricsHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -255,6 +263,10 @@ func (o *MusicLibraryAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/songs"] = NewGetSongs(o.context, o.GetSongsHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/songs/lyrics"] = NewGetSongsLyrics(o.context, o.GetSongsLyricsHandler)
 }
 
 // Serve creates a http handler to serve the API over HTTP

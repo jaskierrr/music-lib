@@ -16,6 +16,7 @@ type repository struct {
 
 type Repository interface {
 	GetSongs(ctx context.Context, params operations.GetSongsParams) ([]*models.Song, error)
+	GetLyrics(ctx context.Context, params operations.GetSongsLyricsParams) (string, error)
 }
 
 func NewUserRepo(db database.DB, logger *slog.Logger) Repository {

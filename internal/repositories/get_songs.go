@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"errors"
 	"log/slog"
 	"main/api/restapi/operations"
 	"main/internal/models"
@@ -34,11 +35,12 @@ func (repo *repository) GetSongs(ctx context.Context, params operations.GetSongs
 	}
 
 	rows, err := repo.db.GetConn().Query(ctx, sql, args...)
-
+	rowsCount := 0
 	songs := []*models.Song{}
 	defer rows.Close()
 
 	for rows.Next() {
+		rowsCount++
 		song := models.Song{}
 
 		err := rows.Scan(&song.ID, &song.Group, &song.Song)
@@ -53,7 +55,12 @@ func (repo *repository) GetSongs(ctx context.Context, params operations.GetSongs
 		songs = append(songs, &song)
 	}
 
-	repo.logger.Info("Success GET songs from storage")
+	if rowsCount == 0 {
+		repo.logger.Error("no songs found")
+		return nil, errors.New("no songs found")
+	}
+
+	repo.logger.Debug("Success GET songs from storage")
 
 	return songs, err
 }

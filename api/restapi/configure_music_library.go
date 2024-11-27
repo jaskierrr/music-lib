@@ -42,6 +42,11 @@ func configureAPI(api *operations.MusicLibraryAPI) http.Handler {
 			return middleware.NotImplemented("operation operations.GetSongs has not yet been implemented")
 		})
 	}
+	if api.GetSongsLyricsHandler == nil {
+		api.GetSongsLyricsHandler = operations.GetSongsLyricsHandlerFunc(func(params operations.GetSongsLyricsParams) middleware.Responder {
+			return middleware.NotImplemented("operation operations.GetSongsLyrics has not yet been implemented")
+		})
+	}
 
 	api.PreServerShutdown = func() {}
 

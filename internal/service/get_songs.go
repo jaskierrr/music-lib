@@ -7,10 +7,10 @@ import (
 )
 
 func (s service) GetSongs(ctx context.Context, params operations.GetSongsParams) ([]*models.Song, error) {
-	users, err := s.repo.GetSongs(ctx, params)
+	songs, err := s.repo.GetSongs(ctx, params)
 	if err != nil {
 		return nil, err
 	}
 
-	return users, nil
+	return songs, nil
 }

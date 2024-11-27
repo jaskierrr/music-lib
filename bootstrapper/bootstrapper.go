@@ -49,15 +49,15 @@ func New() RootBoot {
 
 func (r *RootBootstrapper) RunAPI() error {
 	ctx := context.Background()
-	r.Infrastructure.Logger = logger.NewLogger()
+	r.Infrastructure.Logger = logger.NewLogger(r.Config.LogLevel)
 
 	r.registerRepositoriesAndServices(ctx, r.Infrastructure.DB)
 	err := r.registerAPIServer(*r.Config)
 	if err != nil {
-		log.Fatal("cant start server")
+		return err
 	}
 
-	return nil
+	return err
 }
 
 func (r *RootBootstrapper) registerRepositoriesAndServices(ctx context.Context, db database.DB) {
@@ -84,7 +84,7 @@ func (r *RootBootstrapper) registerAPIServer(cfg config.Config) error {
 	r.Handlers = handlers.New(r.Controller, r.Validator, logger)
 	r.Handlers.Link(api)
 	if r.Handlers == nil {
-		log.Fatal("handlers initialization failed")
+		return err
 	}
 
 	r.Infrastructure.Server = restapi.NewServer(api)
@@ -94,5 +94,5 @@ func (r *RootBootstrapper) registerAPIServer(cfg config.Config) error {
 		log.Fatalln(err)
 	}
 
-	return nil
+	return err
 }

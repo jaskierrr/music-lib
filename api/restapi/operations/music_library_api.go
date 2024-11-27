@@ -42,11 +42,20 @@ func NewMusicLibraryAPI(spec *loads.Document) *MusicLibraryAPI {
 
 		JSONProducer: runtime.JSONProducer(),
 
+		DeleteSongsHandler: DeleteSongsHandlerFunc(func(params DeleteSongsParams) middleware.Responder {
+			return middleware.NotImplemented("operation DeleteSongs has not yet been implemented")
+		}),
 		GetSongsHandler: GetSongsHandlerFunc(func(params GetSongsParams) middleware.Responder {
 			return middleware.NotImplemented("operation GetSongs has not yet been implemented")
 		}),
 		GetSongsLyricsHandler: GetSongsLyricsHandlerFunc(func(params GetSongsLyricsParams) middleware.Responder {
 			return middleware.NotImplemented("operation GetSongsLyrics has not yet been implemented")
+		}),
+		PatchSongsHandler: PatchSongsHandlerFunc(func(params PatchSongsParams) middleware.Responder {
+			return middleware.NotImplemented("operation PatchSongs has not yet been implemented")
+		}),
+		PostSongsHandler: PostSongsHandlerFunc(func(params PostSongsParams) middleware.Responder {
+			return middleware.NotImplemented("operation PostSongs has not yet been implemented")
 		}),
 	}
 }
@@ -84,10 +93,16 @@ type MusicLibraryAPI struct {
 	//   - application/json
 	JSONProducer runtime.Producer
 
+	// DeleteSongsHandler sets the operation handler for the delete songs operation
+	DeleteSongsHandler DeleteSongsHandler
 	// GetSongsHandler sets the operation handler for the get songs operation
 	GetSongsHandler GetSongsHandler
 	// GetSongsLyricsHandler sets the operation handler for the get songs lyrics operation
 	GetSongsLyricsHandler GetSongsLyricsHandler
+	// PatchSongsHandler sets the operation handler for the patch songs operation
+	PatchSongsHandler PatchSongsHandler
+	// PostSongsHandler sets the operation handler for the post songs operation
+	PostSongsHandler PostSongsHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -165,11 +180,20 @@ func (o *MusicLibraryAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
+	if o.DeleteSongsHandler == nil {
+		unregistered = append(unregistered, "DeleteSongsHandler")
+	}
 	if o.GetSongsHandler == nil {
 		unregistered = append(unregistered, "GetSongsHandler")
 	}
 	if o.GetSongsLyricsHandler == nil {
 		unregistered = append(unregistered, "GetSongsLyricsHandler")
+	}
+	if o.PatchSongsHandler == nil {
+		unregistered = append(unregistered, "PatchSongsHandler")
+	}
+	if o.PostSongsHandler == nil {
+		unregistered = append(unregistered, "PostSongsHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -259,6 +283,10 @@ func (o *MusicLibraryAPI) initHandlerCache() {
 		o.handlers = make(map[string]map[string]http.Handler)
 	}
 
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/songs"] = NewDeleteSongs(o.context, o.DeleteSongsHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
@@ -267,6 +295,14 @@ func (o *MusicLibraryAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/songs/lyrics"] = NewGetSongsLyrics(o.context, o.GetSongsLyricsHandler)
+	if o.handlers["PATCH"] == nil {
+		o.handlers["PATCH"] = make(map[string]http.Handler)
+	}
+	o.handlers["PATCH"]["/songs"] = NewPatchSongs(o.context, o.PatchSongsHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/songs"] = NewPostSongs(o.context, o.PostSongsHandler)
 }
 
 // Serve creates a http handler to serve the API over HTTP

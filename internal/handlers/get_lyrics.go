@@ -8,10 +8,6 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 )
 
-// Request URL:
-// http://localhost:8080/songs?group=Muse&song=Supermassive%20Black%20Hole&link=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DXsp3_a-PMTw&releaseDate=2006-07-16&page=1&limit=3
-
-
 func (h *handlers) GetLyrics(params operations.GetSongsLyricsParams) middleware.Responder {
 	h.logger.Debug("Trying to GET song lyrics from storage",
 		slog.Any("params", params),

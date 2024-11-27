@@ -12,36 +12,22 @@ paths:
     get:
       description: Return songs
       parameters:
-        - name: group
-          in: query
-          description: group name
-          required: false
-          type: string
-        - name: song
-          in: query
-          description: song name
-          required: false
-          type: string
-        - name: link
-          in: query
-          description: link
-          required: false
-          type: string
-        - name: releaseDate
-          in: query
-          description: release date
-          required: false
-          type: string
-        - name: page
-          in: query
+        - in: body
+          name: song
+          description: song
+          required: true
+          schema:
+            $ref: "#/definitions/Song"
+        - in: query
+          name: page
           description: page number
-          required: false
+          required: true
           type: integer
           default: 0
-        - name: limit
-          in: query
+        - in: query
+          name: limit
           description: limit of pages
-          required: false
+          required: true
           type: integer
           default: 0
       responses:
@@ -50,6 +36,57 @@ paths:
           schema:
             type: array
             items:
+              $ref: '#/definitions/Song'
+        400:
+          description: bad request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    delete:
+      description: Delete song
+      parameters:
+        - name: id
+          in: query
+          description: song id
+          required: false
+          type: integer
+      responses:
+        204:
+          description: no content
+        400:
+          description: bad request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    patch:
+      description: Update song
+      parameters:
+        - in: body
+          name: song
+          description: song
+          required: true
+          schema:
+            $ref: "#/definitions/Song"
+      responses:
+        200:
+          description: Song is updated
+          schema:
+              $ref: '#/definitions/Song'
+        400:
+          description: bad request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    post:
+      description: Create song
+      parameters:
+        - in: body
+          name: song
+          description: song
+          required: true
+          schema:
+            $ref: "#/definitions/NewSong"
+      responses:
+        201:
+          description: Song is created
+          schema:
               $ref: '#/definitions/Song'
         400:
           description: bad request
@@ -103,6 +140,36 @@ definitions:
         type: string
         example: "2006-07-16"
       lyrics:
+        type: string
+        example: "Ooh baby, don't you know I suffer?"
+      link:
+        type: string
+        example: "https://www.youtube.com/watch?v=Xsp3_a-PMTw"
+  NewSong:
+    type: object
+    properties:
+      group:
+        type: string
+        example: "Muse"
+      song:
+        type: string
+        example: "Supermassive Black Hole"
+      releaseDate:
+        type: string
+        example: "2006-07-16"
+      lyrics:
+        type: string
+        example: "Ooh baby, don't you know I suffer?"
+      link:
+        type: string
+        example: "https://www.youtube.com/watch?v=Xsp3_a-PMTw"
+  SongDetail:
+    type: object
+    properties:
+      releaseDate:
+        type: string
+        example: "2006-07-16"
+      Text:
         type: string
         example: "Ooh baby, don't you know I suffer?"
       link:

@@ -7,8 +7,6 @@ import (
 	sq "github.com/Masterminds/squirrel"
 )
 
-// Request URL:
-// http://localhost:8080/songs/lyrics?id=1&couplet=1&limit=1
 
 func (repo *repository) GetLyrics(ctx context.Context, params operations.GetSongsLyricsParams) (string, error) {
 	queryBuilder := sq.Select("lyrics").From("songs").Where(sq.Eq{"id": params.ID})

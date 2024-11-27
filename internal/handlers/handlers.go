@@ -6,7 +6,6 @@ import (
 	"main/internal/controller"
 
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/go-playground/validator/v10"
 )
 
 type handlers struct {
@@ -16,12 +15,15 @@ type handlers struct {
 
 type Handlers interface {
 	GetSongs(params operations.GetSongsParams) middleware.Responder
+	DeleteSong(params operations.DeleteSongsParams) middleware.Responder
 	GetLyrics(params operations.GetSongsLyricsParams) middleware.Responder
+	UpdateSong(params operations.PatchSongsParams) middleware.Responder
+	CreateSong(params operations.PostSongsParams) middleware.Responder
 
 	Link(api *operations.MusicLibraryAPI)
 }
 
-func New(controller controller.Controller, validator *validator.Validate, logger *slog.Logger) Handlers {
+func New(controller controller.Controller, logger *slog.Logger) Handlers {
 	return &handlers{
 		logger:     logger,
 		controller: controller,
@@ -31,4 +33,7 @@ func New(controller controller.Controller, validator *validator.Validate, logger
 func (h *handlers) Link(api *operations.MusicLibraryAPI) {
 	api.GetSongsHandler = operations.GetSongsHandlerFunc(h.GetSongs)
 	api.GetSongsLyricsHandler = operations.GetSongsLyricsHandlerFunc(h.GetLyrics)
+	api.DeleteSongsHandler = operations.DeleteSongsHandlerFunc(h.DeleteSong)
+	api.PatchSongsHandler = operations.PatchSongsHandlerFunc(h.UpdateSong)
+	api.PostSongsHandler = operations.PostSongsHandlerFunc(h.CreateSong)
 }

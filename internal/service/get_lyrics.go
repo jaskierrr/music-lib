@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"log"
 	"main/api/restapi/operations"
 	"reflect"
 	"strings"
@@ -17,9 +16,6 @@ func (s service) GetLyrics(ctx context.Context, params operations.GetSongsLyrics
 		return "", err
 	}
 
-	log.Println(string([]rune{reverseSolidus, runeN, reverseSolidus, runeN}))
-
-
 	lyricsData := []rune(lyricsStr)
 
 	lyricsArr := []string{}
@@ -28,14 +24,7 @@ func (s service) GetLyrics(ctx context.Context, params operations.GetSongsLyrics
 
 	for i := 4; i < len(lyricsData); i++ {
 
-		log.Println("AAAAAAAAAAAAAAAAAAAAAAAAA")
-		log.Println(string(lyricsNode))
-		log.Println(string(lyricsData[i-4:i]))
-		log.Println(string(newCouplet))
-
 		if reflect.DeepEqual(lyricsData[i-4:i], newCouplet) {
-			log.Println("NEW LINE")
-			log.Println(string(lyricsNode))
 			lyricsArr = append(lyricsArr, string(lyricsNode))
 			lyricsNode = []rune{}
 		}
@@ -43,8 +32,16 @@ func (s service) GetLyrics(ctx context.Context, params operations.GetSongsLyrics
 		lyricsNode = append(lyricsNode, lyricsData[i])
 	}
 
-	log.Println(lyricsArr)
 	lyricsArr = append(lyricsArr, string(lyricsNode))
+
+	lenArr := int64(len(lyricsArr))
+
+	if *params.Couplet >= lenArr {
+		return "", err
+	}
+	if *params.Limit >= lenArr {
+		*params.Limit = lenArr
+	}
 
 	lyrics := ""
 

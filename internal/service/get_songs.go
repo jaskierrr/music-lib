@@ -14,3 +14,4 @@ func (s service) GetSongs(ctx context.Context, params operations.GetSongsParams)
 
 	return songs, nil
 }
+

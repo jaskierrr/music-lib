@@ -13,10 +13,9 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// GetSongsURL generates an URL for the get songs operation
-type GetSongsURL struct {
-	Limit int64
-	Page  int64
+// DeleteSongsURL generates an URL for the delete songs operation
+type DeleteSongsURL struct {
+	ID *int64
 
 	_basePath string
 	// avoid unkeyed usage
@@ -26,7 +25,7 @@ type GetSongsURL struct {
 // WithBasePath sets the base path for this url builder, only required when it's different from the
 // base path specified in the swagger spec.
 // When the value of the base path is an empty string
-func (o *GetSongsURL) WithBasePath(bp string) *GetSongsURL {
+func (o *DeleteSongsURL) WithBasePath(bp string) *DeleteSongsURL {
 	o.SetBasePath(bp)
 	return o
 }
@@ -34,12 +33,12 @@ func (o *GetSongsURL) WithBasePath(bp string) *GetSongsURL {
 // SetBasePath sets the base path for this url builder, only required when it's different from the
 // base path specified in the swagger spec.
 // When the value of the base path is an empty string
-func (o *GetSongsURL) SetBasePath(bp string) {
+func (o *DeleteSongsURL) SetBasePath(bp string) {
 	o._basePath = bp
 }
 
 // Build a url path and query string
-func (o *GetSongsURL) Build() (*url.URL, error) {
+func (o *DeleteSongsURL) Build() (*url.URL, error) {
 	var _result url.URL
 
 	var _path = "/songs"
@@ -52,14 +51,12 @@ func (o *GetSongsURL) Build() (*url.URL, error) {
 
 	qs := make(url.Values)
 
-	limitQ := swag.FormatInt64(o.Limit)
-	if limitQ != "" {
-		qs.Set("limit", limitQ)
+	var idQ string
+	if o.ID != nil {
+		idQ = swag.FormatInt64(*o.ID)
 	}
-
-	pageQ := swag.FormatInt64(o.Page)
-	if pageQ != "" {
-		qs.Set("page", pageQ)
+	if idQ != "" {
+		qs.Set("id", idQ)
 	}
 
 	_result.RawQuery = qs.Encode()
@@ -68,7 +65,7 @@ func (o *GetSongsURL) Build() (*url.URL, error) {
 }
 
 // Must is a helper function to panic when the url builder returns an error
-func (o *GetSongsURL) Must(u *url.URL, err error) *url.URL {
+func (o *DeleteSongsURL) Must(u *url.URL, err error) *url.URL {
 	if err != nil {
 		panic(err)
 	}
@@ -79,17 +76,17 @@ func (o *GetSongsURL) Must(u *url.URL, err error) *url.URL {
 }
 
 // String returns the string representation of the path with query string
-func (o *GetSongsURL) String() string {
+func (o *DeleteSongsURL) String() string {
 	return o.Must(o.Build()).String()
 }
 
 // BuildFull builds a full url with scheme, host, path and query string
-func (o *GetSongsURL) BuildFull(scheme, host string) (*url.URL, error) {
+func (o *DeleteSongsURL) BuildFull(scheme, host string) (*url.URL, error) {
 	if scheme == "" {
-		return nil, errors.New("scheme is required for a full url on GetSongsURL")
+		return nil, errors.New("scheme is required for a full url on DeleteSongsURL")
 	}
 	if host == "" {
-		return nil, errors.New("host is required for a full url on GetSongsURL")
+		return nil, errors.New("host is required for a full url on DeleteSongsURL")
 	}
 
 	base, err := o.Build()
@@ -103,6 +100,6 @@ func (o *GetSongsURL) BuildFull(scheme, host string) (*url.URL, error) {
 }
 
 // StringFull returns the string representation of a complete url
-func (o *GetSongsURL) StringFull(scheme, host string) string {
+func (o *DeleteSongsURL) StringFull(scheme, host string) string {
 	return o.Must(o.BuildFull(scheme, host)).String()
 }

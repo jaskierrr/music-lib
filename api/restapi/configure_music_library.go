@@ -37,6 +37,11 @@ func configureAPI(api *operations.MusicLibraryAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
+	if api.DeleteSongsHandler == nil {
+		api.DeleteSongsHandler = operations.DeleteSongsHandlerFunc(func(params operations.DeleteSongsParams) middleware.Responder {
+			return middleware.NotImplemented("operation operations.DeleteSongs has not yet been implemented")
+		})
+	}
 	if api.GetSongsHandler == nil {
 		api.GetSongsHandler = operations.GetSongsHandlerFunc(func(params operations.GetSongsParams) middleware.Responder {
 			return middleware.NotImplemented("operation operations.GetSongs has not yet been implemented")
@@ -45,6 +50,16 @@ func configureAPI(api *operations.MusicLibraryAPI) http.Handler {
 	if api.GetSongsLyricsHandler == nil {
 		api.GetSongsLyricsHandler = operations.GetSongsLyricsHandlerFunc(func(params operations.GetSongsLyricsParams) middleware.Responder {
 			return middleware.NotImplemented("operation operations.GetSongsLyrics has not yet been implemented")
+		})
+	}
+	if api.PatchSongsHandler == nil {
+		api.PatchSongsHandler = operations.PatchSongsHandlerFunc(func(params operations.PatchSongsParams) middleware.Responder {
+			return middleware.NotImplemented("operation operations.PatchSongs has not yet been implemented")
+		})
+	}
+	if api.PostSongsHandler == nil {
+		api.PostSongsHandler = operations.PostSongsHandlerFunc(func(params operations.PostSongsParams) middleware.Responder {
+			return middleware.NotImplemented("operation operations.PostSongs has not yet been implemented")
 		})
 	}
 

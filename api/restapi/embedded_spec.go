@@ -35,42 +35,29 @@ func init() {
         "description": "Return songs",
         "parameters": [
           {
-            "type": "string",
-            "description": "group name",
-            "name": "group",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "song name",
+            "description": "song",
             "name": "song",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "link",
-            "name": "link",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "release date",
-            "name": "releaseDate",
-            "in": "query"
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Song"
+            }
           },
           {
             "type": "integer",
             "default": 0,
             "description": "page number",
             "name": "page",
-            "in": "query"
+            "in": "query",
+            "required": true
           },
           {
             "type": "integer",
             "default": 0,
             "description": "limit of pages",
             "name": "limit",
-            "in": "query"
+            "in": "query",
+            "required": true
           }
         ],
         "responses": {
@@ -81,6 +68,84 @@ func init() {
               "items": {
                 "$ref": "#/definitions/Song"
               }
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Create song",
+        "parameters": [
+          {
+            "description": "song",
+            "name": "song",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewSong"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Song is created",
+            "schema": {
+              "$ref": "#/definitions/Song"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete song",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "song id",
+            "name": "id",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "no content"
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Update song",
+        "parameters": [
+          {
+            "description": "song",
+            "name": "song",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Song"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Song is updated",
+            "schema": {
+              "$ref": "#/definitions/Song"
             }
           },
           "400": {
@@ -155,6 +220,31 @@ func init() {
         }
       ]
     },
+    "NewSong": {
+      "type": "object",
+      "properties": {
+        "group": {
+          "type": "string",
+          "example": "Muse"
+        },
+        "link": {
+          "type": "string",
+          "example": "https://www.youtube.com/watch?v=Xsp3_a-PMTw"
+        },
+        "lyrics": {
+          "type": "string",
+          "example": "Ooh baby, don't you know I suffer?"
+        },
+        "releaseDate": {
+          "type": "string",
+          "example": "2006-07-16"
+        },
+        "song": {
+          "type": "string",
+          "example": "Supermassive Black Hole"
+        }
+      }
+    },
     "Song": {
       "type": "object",
       "properties": {
@@ -183,6 +273,23 @@ func init() {
           "example": "Supermassive Black Hole"
         }
       }
+    },
+    "SongDetail": {
+      "type": "object",
+      "properties": {
+        "Text": {
+          "type": "string",
+          "example": "Ooh baby, don't you know I suffer?"
+        },
+        "link": {
+          "type": "string",
+          "example": "https://www.youtube.com/watch?v=Xsp3_a-PMTw"
+        },
+        "releaseDate": {
+          "type": "string",
+          "example": "2006-07-16"
+        }
+      }
     }
   }
 }`))
@@ -204,42 +311,29 @@ func init() {
         "description": "Return songs",
         "parameters": [
           {
-            "type": "string",
-            "description": "group name",
-            "name": "group",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "song name",
+            "description": "song",
             "name": "song",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "link",
-            "name": "link",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "release date",
-            "name": "releaseDate",
-            "in": "query"
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Song"
+            }
           },
           {
             "type": "integer",
             "default": 0,
             "description": "page number",
             "name": "page",
-            "in": "query"
+            "in": "query",
+            "required": true
           },
           {
             "type": "integer",
             "default": 0,
             "description": "limit of pages",
             "name": "limit",
-            "in": "query"
+            "in": "query",
+            "required": true
           }
         ],
         "responses": {
@@ -250,6 +344,84 @@ func init() {
               "items": {
                 "$ref": "#/definitions/Song"
               }
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Create song",
+        "parameters": [
+          {
+            "description": "song",
+            "name": "song",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewSong"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Song is created",
+            "schema": {
+              "$ref": "#/definitions/Song"
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete song",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "song id",
+            "name": "id",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "no content"
+          },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Update song",
+        "parameters": [
+          {
+            "description": "song",
+            "name": "song",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Song"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Song is updated",
+            "schema": {
+              "$ref": "#/definitions/Song"
             }
           },
           "400": {
@@ -333,6 +505,31 @@ func init() {
         }
       }
     },
+    "NewSong": {
+      "type": "object",
+      "properties": {
+        "group": {
+          "type": "string",
+          "example": "Muse"
+        },
+        "link": {
+          "type": "string",
+          "example": "https://www.youtube.com/watch?v=Xsp3_a-PMTw"
+        },
+        "lyrics": {
+          "type": "string",
+          "example": "Ooh baby, don't you know I suffer?"
+        },
+        "releaseDate": {
+          "type": "string",
+          "example": "2006-07-16"
+        },
+        "song": {
+          "type": "string",
+          "example": "Supermassive Black Hole"
+        }
+      }
+    },
     "Song": {
       "type": "object",
       "properties": {
@@ -359,6 +556,23 @@ func init() {
         "song": {
           "type": "string",
           "example": "Supermassive Black Hole"
+        }
+      }
+    },
+    "SongDetail": {
+      "type": "object",
+      "properties": {
+        "Text": {
+          "type": "string",
+          "example": "Ooh baby, don't you know I suffer?"
+        },
+        "link": {
+          "type": "string",
+          "example": "https://www.youtube.com/watch?v=Xsp3_a-PMTw"
+        },
+        "releaseDate": {
+          "type": "string",
+          "example": "2006-07-16"
         }
       }
     }

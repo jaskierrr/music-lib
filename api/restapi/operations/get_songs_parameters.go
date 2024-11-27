@@ -6,6 +6,7 @@ package operations
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"io"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -13,6 +14,9 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
+
+	"main/internal/models"
 )
 
 // NewGetSongsParams creates a new GetSongsParams object
@@ -23,14 +27,13 @@ func NewGetSongsParams() GetSongsParams {
 		// initialize parameters with default values
 
 		limitDefault = int64(0)
-
-		pageDefault = int64(0)
+		pageDefault  = int64(0)
 	)
 
 	return GetSongsParams{
-		Limit: &limitDefault,
+		Limit: limitDefault,
 
-		Page: &pageDefault,
+		Page: pageDefault,
 	}
 }
 
@@ -43,32 +46,23 @@ type GetSongsParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
-	/*group name
-	  In: query
-	*/
-	Group *string
 	/*limit of pages
+	  Required: true
 	  In: query
 	  Default: 0
 	*/
-	Limit *int64
-	/*link
-	  In: query
-	*/
-	Link *string
+	Limit int64
 	/*page number
+	  Required: true
 	  In: query
 	  Default: 0
 	*/
-	Page *int64
-	/*release date
-	  In: query
+	Page int64
+	/*song
+	  Required: true
+	  In: body
 	*/
-	ReleaseDate *string
-	/*song name
-	  In: query
-	*/
-	Song *string
+	Song *models.Song
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -82,18 +76,8 @@ func (o *GetSongsParams) BindRequest(r *http.Request, route *middleware.MatchedR
 
 	qs := runtime.Values(r.URL.Query())
 
-	qGroup, qhkGroup, _ := qs.GetOK("group")
-	if err := o.bindGroup(qGroup, qhkGroup, route.Formats); err != nil {
-		res = append(res, err)
-	}
-
 	qLimit, qhkLimit, _ := qs.GetOK("limit")
 	if err := o.bindLimit(qLimit, qhkLimit, route.Formats); err != nil {
-		res = append(res, err)
-	}
-
-	qLink, qhkLink, _ := qs.GetOK("link")
-	if err := o.bindLink(qLink, qhkLink, route.Formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -102,14 +86,32 @@ func (o *GetSongsParams) BindRequest(r *http.Request, route *middleware.MatchedR
 		res = append(res, err)
 	}
 
-	qReleaseDate, qhkReleaseDate, _ := qs.GetOK("releaseDate")
-	if err := o.bindReleaseDate(qReleaseDate, qhkReleaseDate, route.Formats); err != nil {
-		res = append(res, err)
-	}
+	if runtime.HasBody(r) {
+		defer r.Body.Close()
+		var body models.Song
+		if err := route.Consumer.Consume(r.Body, &body); err != nil {
+			if err == io.EOF {
+				res = append(res, errors.Required("song", "body", ""))
+			} else {
+				res = append(res, errors.NewParseError("song", "body", "", err))
+			}
+		} else {
+			// validate body object
+			if err := body.Validate(route.Formats); err != nil {
+				res = append(res, err)
+			}
 
-	qSong, qhkSong, _ := qs.GetOK("song")
-	if err := o.bindSong(qSong, qhkSong, route.Formats); err != nil {
-		res = append(res, err)
+			ctx := validate.WithOperationRequest(r.Context())
+			if err := body.ContextValidate(ctx, route.Formats); err != nil {
+				res = append(res, err)
+			}
+
+			if len(res) == 0 {
+				o.Song = &body
+			}
+		}
+	} else {
+		res = append(res, errors.Required("song", "body", ""))
 	}
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
@@ -117,122 +119,54 @@ func (o *GetSongsParams) BindRequest(r *http.Request, route *middleware.MatchedR
 	return nil
 }
 
-// bindGroup binds and validates parameter Group from query.
-func (o *GetSongsParams) bindGroup(rawData []string, hasKey bool, formats strfmt.Registry) error {
-	var raw string
-	if len(rawData) > 0 {
-		raw = rawData[len(rawData)-1]
-	}
-
-	// Required: false
-	// AllowEmptyValue: false
-
-	if raw == "" { // empty values pass all other validations
-		return nil
-	}
-	o.Group = &raw
-
-	return nil
-}
-
 // bindLimit binds and validates parameter Limit from query.
 func (o *GetSongsParams) bindLimit(rawData []string, hasKey bool, formats strfmt.Registry) error {
+	if !hasKey {
+		return errors.Required("limit", "query", rawData)
+	}
 	var raw string
 	if len(rawData) > 0 {
 		raw = rawData[len(rawData)-1]
 	}
 
-	// Required: false
+	// Required: true
 	// AllowEmptyValue: false
 
-	if raw == "" { // empty values pass all other validations
-		// Default values have been previously initialized by NewGetSongsParams()
-		return nil
+	if err := validate.RequiredString("limit", "query", raw); err != nil {
+		return err
 	}
 
 	value, err := swag.ConvertInt64(raw)
 	if err != nil {
 		return errors.InvalidType("limit", "query", "int64", raw)
 	}
-	o.Limit = &value
-
-	return nil
-}
-
-// bindLink binds and validates parameter Link from query.
-func (o *GetSongsParams) bindLink(rawData []string, hasKey bool, formats strfmt.Registry) error {
-	var raw string
-	if len(rawData) > 0 {
-		raw = rawData[len(rawData)-1]
-	}
-
-	// Required: false
-	// AllowEmptyValue: false
-
-	if raw == "" { // empty values pass all other validations
-		return nil
-	}
-	o.Link = &raw
+	o.Limit = value
 
 	return nil
 }
 
 // bindPage binds and validates parameter Page from query.
 func (o *GetSongsParams) bindPage(rawData []string, hasKey bool, formats strfmt.Registry) error {
+	if !hasKey {
+		return errors.Required("page", "query", rawData)
+	}
 	var raw string
 	if len(rawData) > 0 {
 		raw = rawData[len(rawData)-1]
 	}
 
-	// Required: false
+	// Required: true
 	// AllowEmptyValue: false
 
-	if raw == "" { // empty values pass all other validations
-		// Default values have been previously initialized by NewGetSongsParams()
-		return nil
+	if err := validate.RequiredString("page", "query", raw); err != nil {
+		return err
 	}
 
 	value, err := swag.ConvertInt64(raw)
 	if err != nil {
 		return errors.InvalidType("page", "query", "int64", raw)
 	}
-	o.Page = &value
-
-	return nil
-}
-
-// bindReleaseDate binds and validates parameter ReleaseDate from query.
-func (o *GetSongsParams) bindReleaseDate(rawData []string, hasKey bool, formats strfmt.Registry) error {
-	var raw string
-	if len(rawData) > 0 {
-		raw = rawData[len(rawData)-1]
-	}
-
-	// Required: false
-	// AllowEmptyValue: false
-
-	if raw == "" { // empty values pass all other validations
-		return nil
-	}
-	o.ReleaseDate = &raw
-
-	return nil
-}
-
-// bindSong binds and validates parameter Song from query.
-func (o *GetSongsParams) bindSong(rawData []string, hasKey bool, formats strfmt.Registry) error {
-	var raw string
-	if len(rawData) > 0 {
-		raw = rawData[len(rawData)-1]
-	}
-
-	// Required: false
-	// AllowEmptyValue: false
-
-	if raw == "" { // empty values pass all other validations
-		return nil
-	}
-	o.Song = &raw
+	o.Page = value
 
 	return nil
 }

@@ -1,12 +1,12 @@
 # Стек
-Создал основу API при помощи openAPI Swagger (go-swagger)
-БД Postgres
-Миграции golang-migrate
-Сборка docker-compose
-Старался придерживаться Clean Architecture
+- Создал основу API при помощи openAPI Swagger (go-swagger)
+- БД Postgres
+- Миграции golang-migrate
+- Сборка docker-compose
+- Старался придерживаться Clean Architecture
 
 # Сборка
-make build в корневой папке
+`make build` в корневой папке
 
 Применил многоэтапную сборку для golang image
 

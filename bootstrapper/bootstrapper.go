@@ -62,7 +62,7 @@ func (r *RootBootstrapper) RunAPI() error {
 func (r *RootBootstrapper) registerRepositoriesAndServices(ctx context.Context, db database.DB) {
 	logger := r.Infrastructure.Logger
 	r.Infrastructure.DB = database.NewDB().NewConn(ctx, *r.Config, logger)
-	r.ExternalRepo = external_repo.NewSongAPIClient("", logger)
+	r.ExternalRepo = external_repo.NewSongAPIClient(r.Config.ExternalAPI_URL, logger)
 	r.Repository = repo.NewUserRepo(r.Infrastructure.DB, logger)
 	r.Service = service.New(r.Repository, r.ExternalRepo, logger)
 }

@@ -22,7 +22,7 @@ type SongAPIClient interface {
 
 func NewSongAPIClient(apiURL string, logger *slog.Logger) SongAPIClient {
 	return &songAPIClient{
-		apiURL:     "http://localhost:8082",
+		apiURL:     apiURL,
 		logger:     logger,
 		httpClient: &http.Client{},
 	}
@@ -31,13 +31,10 @@ func NewSongAPIClient(apiURL string, logger *slog.Logger) SongAPIClient {
 // http://localhost:8082/info?group=Muse&song=Supermassive Black Hole
 
 func (repo *songAPIClient) CreateSong(ctx context.Context, params operations.PostSongsParams) (models.NewSong, error) {
-	// url := fmt.Sprintf("%s/info?group=%s&song=%s", repo.apiURL, params.Song.Group, params.Song.Song)
-
 	queryParams := url.Values{}
 	queryParams.Add("group", params.Song.Group)
 	queryParams.Add("song", params.Song.Song)
 
-	// Собираем URL
 	url := fmt.Sprintf("%s/info?%s", repo.apiURL, queryParams.Encode())
 
 	repo.logger.Debug("Query",
